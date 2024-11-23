@@ -26,96 +26,63 @@ interface DappsData {
 }
 
 // Convert the imported data to our DAppMetadata format
-const DAPP_METADATA: { [key: string]: DAppMetadata } = {};
+const processedDapps: DAppMetadata[] = [];
 
 // Process the imported data
-Object.values((dappsData as DappsData).networks).forEach(dapps => {
+Object.entries((dappsData as DappsData).networks).forEach(([network, dapps]) => {
   dapps.forEach(dapp => {
-    if (!DAPP_METADATA[dapp.id]) {
-      DAPP_METADATA[dapp.id] = {
-        id: dapp.id,
-        name: dapp.name,
-        description: dapp.description,
-        categories: dapp.categories,
-        url: dapp.url,
-        networks: dapp.chains,
-        logo: dapp.logo
-      };
-    }
+    processedDapps.push({
+      id: dapp.id,
+      name: dapp.name,
+      description: dapp.description,
+      categories: dapp.categories,
+      url: dapp.url,
+      networks: dapp.chains,
+      logo: dapp.logo
+    });
   });
 });
 
-export function getDAppMetadata(id: string): DAppMetadata | null {
-  return DAPP_METADATA[id] || null;
-}
-
 export function getAllDAppMetadata(): DAppMetadata[] {
-  return Object.values(DAPP_METADATA);
+  return processedDapps;
 }
 
 export function getDAppById(id: string): DAppMetadata | undefined {
-  return Object.values(DAPP_METADATA).find(dapp => dapp.id === id);
+  return processedDapps.find(dapp => dapp.id === id);
 }
 
 export function getDAppsByCategory(category: string): DAppMetadata[] {
-  return Object.values(DAPP_METADATA).filter(dapp => 
-    dapp.categories.some(c => c.toLowerCase() === category.toLowerCase())
-  );
+  if (!category) return processedDapps;
+  return processedDapps.filter(dapp => dapp.categories.includes(category));
 }
 
 export function getDAppsByNetwork(network: string): DAppMetadata[] {
-  return Object.values(DAPP_METADATA).filter(dapp => 
-    dapp.networks.some(n => n.toLowerCase() === network.toLowerCase())
-  );
+  if (!network) return processedDapps;
+  return processedDapps.filter(dapp => dapp.networks.includes(network));
 }
 
-// Get all unique networks
-export function getAllNetworks(): string[] {
-  const networks = new Set<string>();
-  Object.values(DAPP_METADATA).forEach(dapp => {
-    dapp.networks.forEach(network => networks.add(network));
-  });
-  return Array.from(networks).sort();
-}
-
-// Get all unique categories
 export function getAllCategories(): string[] {
   const categories = new Set<string>();
-  Object.values(DAPP_METADATA).forEach(dapp => {
+  processedDapps.forEach(dapp => {
     dapp.categories.forEach(category => categories.add(category));
   });
   return Array.from(categories).sort();
 }
 
-// Get network statistics
-export function getNetworkStats(): { [network: string]: number } {
-  const stats: { [network: string]: number } = {};
-  Object.values((dappsData as DappsData).networks).forEach((dapps, network) => {
-    stats[network] = dapps.length;
-  });
-  return stats;
-}
-
-export function getAllDAppMetadataAlternative(): DAppMetadata[] {
-  return dappsData;
-}
-
-export function getDAppByIdAlternative(id: string): DAppMetadata | undefined {
-  return dappsData.find(dapp => dapp.id === id);
-}
-
-export function getAllCategoriesAlternative(): string[] {
-  const categories = new Set<string>();
-  dappsData.forEach(dapp => {
-    dapp.categories?.forEach(category => categories.add(category));
-  });
-  return Array.from(categories).sort();
-}
-
-export function getAllNetworksAlternative(): string[] {
+export function getAllNetworks(): string[] {
   const networks = new Set<string>();
-  dappsData.forEach(dapp => {
-    dapp.networks?.forEach(network => networks.add(network));
+  processedDapps.forEach(dapp => {
+    dapp.networks.forEach(network => networks.add(network));
   });
   return Array.from(networks).sort();
+}
+
+export function getNetworkStats(): { [network: string]: number } {
+  const stats: { [network: string]: number } = {};
+  processedDapps.forEach(dapp => {
+    dapp.networks.forEach(network => {
+      stats[network] = (stats[network] || 0) + 1;
+    });
+  });
+  return stats;
 }
