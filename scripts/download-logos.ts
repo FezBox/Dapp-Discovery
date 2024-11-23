@@ -59,6 +59,11 @@ async function main() {
   const dapps = getAllDAppMetadata();
   
   for (const dapp of dapps) {
+    if (!dapp.logo) {
+      console.log(`Skipping ${dapp.name} - no logo URL provided`);
+      continue;
+    }
+
     const extension = path.extname(dapp.logo) || '.png';
     const filename = `${dapp.id}${extension}`;
     
