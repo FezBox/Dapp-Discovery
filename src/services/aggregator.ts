@@ -10,6 +10,11 @@ export interface AggregatedDAppData {
   networks: string[];
   categories: string[];
   url: string;
+  volume?: {
+    daily?: number;
+    weekly?: number;
+    monthly?: number;
+  };
   token?: {
     price: number;
     priceChange24h: number;
