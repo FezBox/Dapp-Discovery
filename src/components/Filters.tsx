@@ -47,7 +47,7 @@ const Filters = ({
           </label>
           <Combobox
             value={selectedCategory || 'All'}
-            onChange={(value) => onCategoryChange(value === 'All' ? '' : value)}
+            onChange={(value: string | null) => onCategoryChange(value === null || value === 'All' ? '' : value)}
           >
             <div className="relative">
               <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left border border-gray-300 dark:border-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300">
@@ -112,7 +112,7 @@ const Filters = ({
           </label>
           <Combobox
             value={selectedNetwork || 'All'}
-            onChange={(value) => onNetworkChange(value === 'All' ? '' : value)}
+            onChange={(value: string | null) => onNetworkChange(value === null || value === 'All' ? '' : value)}
           >
             <div className="relative">
               <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left border border-gray-300 dark:border-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-green-300">
