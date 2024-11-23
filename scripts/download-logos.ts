@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
-import { DAPP_METADATA } from '../src/services/database';
+import { getAllDAppMetadata } from '../src/services/database';
 
 const LOGOS_DIR = path.join(process.cwd(), 'public', 'logos');
 
@@ -56,25 +56,24 @@ function downloadLogo(url: string, filename: string): Promise<void> {
 }
 
 async function main() {
-  const dapps = Object.keys(DAPP_METADATA);
+  const dapps = getAllDAppMetadata();
   
-  for (const dappId of dapps) {
-    const dapp = DAPP_METADATA[dappId];
+  for (const dapp of dapps) {
     const extension = path.extname(dapp.logo) || '.png';
-    const filename = `${dappId}${extension}`;
+    const filename = `${dapp.id}${extension}`;
     
     try {
       // Try the logo URL from the database first
       await downloadLogo(dapp.logo, filename);
     } catch (error) {
-      console.error(`Failed to download logo for ${dappId} from primary source`);
+      console.error(`Failed to download logo for ${dapp.id} from primary source`);
       
       // Try the default logo if available
-      if (DEFAULT_LOGOS[dappId]) {
+      if (DEFAULT_LOGOS[dapp.id]) {
         try {
-          await downloadLogo(DEFAULT_LOGOS[dappId], filename);
+          await downloadLogo(DEFAULT_LOGOS[dapp.id], filename);
         } catch (fallbackError) {
-          console.error(`Failed to download default logo for ${dappId}`);
+          console.error(`Failed to download default logo for ${dapp.id}`);
         }
       }
     }

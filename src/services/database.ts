@@ -1,4 +1,4 @@
-import dappsData from '../data/dapps.json';
+import dappsData from '@/data/dapps.json';
 
 export interface DAppMetadata {
   id: string;
@@ -7,6 +7,7 @@ export interface DAppMetadata {
   categories: string[];
   url: string;
   networks: string[];
+  logo?: string;
 }
 
 interface DappsData {
@@ -19,6 +20,7 @@ interface DappsData {
       description: string;
       url: string;
       chains: string[];
+      logo?: string;
     }>;
   };
 }
@@ -36,7 +38,8 @@ Object.values((dappsData as DappsData).networks).forEach(dapps => {
         description: dapp.description,
         categories: dapp.categories,
         url: dapp.url,
-        networks: dapp.chains
+        networks: dapp.chains,
+        logo: dapp.logo
       };
     }
   });
@@ -91,4 +94,28 @@ export function getNetworkStats(): { [network: string]: number } {
     stats[network] = dapps.length;
   });
   return stats;
+}
+
+export function getAllDAppMetadataAlternative(): DAppMetadata[] {
+  return dappsData;
+}
+
+export function getDAppByIdAlternative(id: string): DAppMetadata | undefined {
+  return dappsData.find(dapp => dapp.id === id);
+}
+
+export function getAllCategoriesAlternative(): string[] {
+  const categories = new Set<string>();
+  dappsData.forEach(dapp => {
+    dapp.categories?.forEach(category => categories.add(category));
+  });
+  return Array.from(categories).sort();
+}
+
+export function getAllNetworksAlternative(): string[] {
+  const networks = new Set<string>();
+  dappsData.forEach(dapp => {
+    dapp.networks?.forEach(network => networks.add(network));
+  });
+  return Array.from(networks).sort();
 }

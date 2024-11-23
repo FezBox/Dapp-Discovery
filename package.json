@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "download-logos": "ts-node scripts/download-logos.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
