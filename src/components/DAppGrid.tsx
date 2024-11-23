@@ -1,4 +1,4 @@
-import { DAppCard } from './DAppCard';
+import DAppCard from './DAppCard';
 import { useDApps } from '../hooks/useDApps';
 
 interface DAppGridProps {
